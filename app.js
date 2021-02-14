@@ -14,7 +14,7 @@ let sliders = [];
 const KEY = '15674931-a9d714b6e9d654524df198e00&q';
 
 // show images 
-const showImages = (images) => {
+const showImages = (images, totalImageCount) => {
 
     imagesArea.style.display = 'block';
     gallery.innerHTML = '';
@@ -26,6 +26,9 @@ const showImages = (images) => {
         div.innerHTML = ` <img class="img-fluid img-thumbnail" onclick=selectItem(event,"${image.webformatURL}") src="${image.webformatURL}" alt="${image.tags}">`;
         gallery.appendChild(div)
     })
+    const imgL = images.length.toString()
+    const imgT = totalImageCount.toString()
+    showCount(imgL, imgT);
     displaySpinner();
 }
 
@@ -33,7 +36,10 @@ const getImages = (query) => {
     fetch(`https://pixabay.com/api/?key=${KEY}=${query}&image_type=photo&pretty=true`)
         .then(response => response.json())
         .then(data => {
-            if (data.total > 0) { showImages(data.hits) } else { showError() }
+            if (data.total > 0) {
+                showImages(data.hits, data.total);
+                console.log('showing data of best ', data.hits.length, ' from ', data.total)
+            } else { showError() }
         })
         .catch(err => console.log(err))
 }
@@ -51,13 +57,13 @@ const selectItem = (event, img) => {
 }
 var timer
 const createSlider = () => {
+
     // check slider image length
     if (sliders.length < 2) {
         alert('Select at least 2 image.')
         return;
     }
     // crate slider previous next area
-    sliderContainer.innerHTML = '';
     const prevNext = document.createElement('div');
     prevNext.className = "prev-next d-flex w-100 justify-content-between align-items-center";
     prevNext.innerHTML = ` 
@@ -113,6 +119,7 @@ const changeSlide = (index) => {
 
 searchBtn.addEventListener('click', function() {
     document.querySelector('.main').style.display = 'none';
+    document.getElementById('search-found').classList.add('d-none')
     clearInterval(timer);
     const search = document.getElementById('search');
     getImages(search.value)
@@ -138,25 +145,22 @@ document.getElementById("duration").addEventListener("keydown", function(event) 
         document.getElementById('create-slider').click()
     }
 });
-// extra feature 1
+
+// extra feature 1-- spinner
 
 const displaySpinner = () => {
-    // const spinner = document.getElementById('loading-spinner')
-    // spinner.classList.toggle('d-none')
     document.getElementById('loading-spinner').classList.toggle('d-none')
 }
 
-// extra feature 2
-const makeAnotherSlide = (allImageArea, slideArea) => {
-    imagesArea.style.display = allImageArea;
-    document.querySelector('.main').style.display = slideArea;
-    // imagesArea.style.display = 'block';
-    // document.querySelector('.main').style.display = 'none';
-}
+// extra feature 2-- if no result found show error
 
-// extra feature 3
 const showError = () => {
     document.getElementById('search-not-found').classList.remove('d-none')
     displaySpinner();
-    makeAnotherSlide('none', 'none')
+}
+
+// extra feature 3-- total found image count
+const showCount = (imageShown, totalImages) => {
+    document.getElementById('search-found').classList.remove('d-none')
+    document.getElementById('search-found').innerText = `showing data of best  ${imageShown} from  ${totalImages} matching results`;
 }
