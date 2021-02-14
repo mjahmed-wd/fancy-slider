@@ -69,7 +69,7 @@ const createSlider = () => {
     document.querySelector('.main').style.display = 'block';
     // hide image aria
     imagesArea.style.display = 'none';
-    const duration = document.getElementById('duration').value || 1000;
+    let duration = parseFloat(document.getElementById('duration').value) || 1000;
     sliders.forEach(slide => {
         let item = document.createElement('div')
         item.className = "slider-item";
@@ -79,7 +79,7 @@ const createSlider = () => {
         sliderContainer.appendChild(item)
     })
     changeSlide(0)
-    timer = setInterval(function() {
+    setInterval(function() {
         slideIndex++;
         changeSlide(slideIndex);
     }, duration);
