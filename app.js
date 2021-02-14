@@ -7,11 +7,9 @@ const sliderContainer = document.getElementById('sliders');
 // selected image 
 let sliders = [];
 
+// My own api key from pixbay
 
-// If this key doesn't work
-// Find the name in the url and go to their website
-// to create your own api key
-const KEY = '15674931-a9d714b6e9d654524df198e00&q';
+const KEY = '20271709-a117cc307e4d937a887a34de4';
 
 // show images 
 const showImages = (images, totalImageCount) => {
@@ -32,8 +30,10 @@ const showImages = (images, totalImageCount) => {
     displaySpinner();
 }
 
+//fetch from link
+
 const getImages = (query) => {
-    fetch(`https://pixabay.com/api/?key=${KEY}=${query}&image_type=photo&pretty=true`)
+    fetch(`https://pixabay.com/api/?key=${KEY}&q=${query}&image_type=photo&pretty=true`)
         .then(response => response.json())
         .then(data => {
             if (data.total > 0) {
@@ -43,6 +43,8 @@ const getImages = (query) => {
         })
         .catch(err => console.log(err))
 }
+
+// slide index
 
 let slideIndex = 0;
 const selectItem = (event, img) => {
@@ -55,7 +57,11 @@ const selectItem = (event, img) => {
         sliders.pop(img);
     }
 }
+
 var timer
+
+// slider creation
+
 const createSlider = () => {
 
     // check slider image length
@@ -117,6 +123,8 @@ const changeSlide = (index) => {
     items[index].style.display = "block"
 }
 
+// search button
+
 searchBtn.addEventListener('click', function() {
     document.querySelector('.main').style.display = 'none';
     document.getElementById('search-found').classList.add('d-none')
@@ -128,9 +136,13 @@ searchBtn.addEventListener('click', function() {
     document.getElementById('search-not-found').classList.add('d-none')
 })
 
+// create slider button click handler
+
 sliderBtn.addEventListener('click', function() {
     createSlider()
 })
+
+// enter button on search
 
 document.getElementById("search").addEventListener("keydown", function(event) {
     if (event.keyCode === 13) {
@@ -138,6 +150,8 @@ document.getElementById("search").addEventListener("keydown", function(event) {
         document.getElementById('search-btn').click()
     }
 });
+
+// enter button on create slider
 
 document.getElementById("duration").addEventListener("keydown", function(event) {
     if (event.keyCode === 13) {
